@@ -1,33 +1,65 @@
--- 1. GETDATE(): Returns the current date and time.
-SELECT GETDATE();
+/* ===============================================
+   SQL SERVER DATE FUNCTIONS DEMO
+   =============================================== */
 
--- 2. DATEDIFF(): Returns the difference between two dates in days, months, or years.
-SELECT DATEDIFF(year, '2001-06-17', GETDATE()); 
-SELECT DATEDIFF(month, '2001-06-17', '2023-04-22');
-SELECT DATEDIFF(day, '2001-06-17', '2023-04-22');
+--------------------------------------------------
+-- 1. GETDATE(): Returns the current date and time
+--------------------------------------------------
+SELECT GETDATE() AS CurrentDateTime;
 
--- 3. DATEADD(): Adds or Subtracts a specified time interval from a date
-SELECT DATEADD(day, 7, '2023-06-17')
-SELECT DATEADD(day, -7, '2023-06-17')
+--------------------------------------------------
+-- 2. DATEDIFF(): Difference between two dates
+-- Syntax: DATEDIFF(interval, start_date, end_date)
+--------------------------------------------------
+-- Difference in years
+SELECT DATEDIFF(year, '2001-06-17', GETDATE()) AS YearsDifference;
 
--- 4. DATEPART(): Returns a single part of a date like year, month, day, hour, etc.
-SELECT DATEPART(month, '2021-04-15');
-SELECT DATEPART(year, '2021-04-15');
-SELECT DATEPART(day, '2021-04-15');
+-- Difference in months
+SELECT DATEDIFF(month, '2001-06-17', '2023-04-22') AS MonthsDifference;
 
--- 5. CONVERT(): Converts a date from one format to another.
-SELECT CONVERT(varchar, GETDATE(), 23);
-SELECT ISDATE('2021-04-15');
-SELECT ISDATE('hello');
+-- Difference in days
+SELECT DATEDIFF(day, '2001-06-17', '2023-04-22') AS DaysDifference;
 
--- 6. ISDATE(): Checks if a string contains a valid date. Returns 1 if true, 0 if false.
-SELECT ISDATE('2021-04-15');
-SELECT ISDATE('hello');
+--------------------------------------------------
+-- 3. DATEADD(): Add or subtract interval from a date
+-- Syntax: DATEADD(interval, number, date)
+--------------------------------------------------
+-- Add 7 days
+SELECT DATEADD(day, 7, '2023-06-17') AS DatePlus7Days;
 
--- 7. DATENAME(): Returns a string representing the name of the month, day or week based on a date.
-SELECT DATENAME(month, '2021-04-15');
+-- Subtract 7 days
+SELECT DATEADD(day, -7, '2023-06-17') AS DateMinus7Days;
 
--- 8. DAY(), MONTH(), YEAR()
-SELECT DAY('2023-06-17');
-SELECT MONTH('2023-06-17');
-SELECT YEAR('2023-06-17');
+--------------------------------------------------
+-- 4. DATEPART(): Extract a part of the date
+-- Syntax: DATEPART(part, date)
+--------------------------------------------------
+SELECT DATEPART(year, '2021-04-15') AS YearPart;
+SELECT DATEPART(month, '2021-04-15') AS MonthPart;
+SELECT DATEPART(day, '2021-04-15') AS DayPart;
+
+--------------------------------------------------
+-- 5. CONVERT(): Convert date to string in different formats
+-- Syntax: CONVERT(datatype, expression, style)
+--------------------------------------------------
+-- Convert to yyyy-mm-dd format
+SELECT CONVERT(varchar, GETDATE(), 23) AS DateYYYYMMDD;
+
+--------------------------------------------------
+-- 6. ISDATE(): Check if a string is a valid date
+--------------------------------------------------
+SELECT ISDATE('2021-04-15') AS IsValidDate; -- Returns 1
+SELECT ISDATE('hello') AS IsValidDate;      -- Returns 0
+
+--------------------------------------------------
+-- 7. DATENAME(): Returns name of month, day, or week
+-- Syntax: DATENAME(part, date)
+--------------------------------------------------
+SELECT DATENAME(month, '2021-04-15') AS MonthName;  -- 'April'
+
+--------------------------------------------------
+-- 8. DAY(), MONTH(), YEAR(): Extract specific parts
+--------------------------------------------------
+SELECT DAY('2023-06-17') AS DayOfMonth;
+SELECT MONTH('2023-06-17') AS MonthNumber;
+SELECT YEAR('2023-06-17') AS YearNumber;
