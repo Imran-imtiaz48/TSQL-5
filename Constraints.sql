@@ -1,96 +1,57 @@
--- 1. NOT NULL constraint
-CREATE TABLE employee (
-    employee_id INT PRIMARY KEY,
-    first_name VARCHAR(50) NOT NULL,
-    last_name VARCHAR(50) NOT NULL,
-    hire_date DATE NOT NULL,
-    salary NUMERIC(10, 2) NOT NULL,
-    department_id INT NOT NULL
-);
+/* ==========================================
+   SQL CONSTRAINTS DEMO
+   NOT NULL, DEFAULT, UNIQUE, PRIMARY KEY,
+   FOREIGN KEY, CHECK
+   ========================================== */
 
+-- Drop tables if they already exist
+DROP TABLE IF EXISTS employee;
+DROP TABLE IF EXISTS department;
+
+--------------------------------------------------
+-- Department Table with Constraints
+--------------------------------------------------
 CREATE TABLE department (
-    dept_id INT PRIMARY KEY,
-    name VARCHAR(50) NOT NULL,
-    state VARCHAR(50) NOT NULL
+    dept_id INT PRIMARY KEY,                     -- PRIMARY KEY
+    name VARCHAR(50) NOT NULL UNIQUE,             -- NOT NULL + UNIQUE
+    state VARCHAR(50) NOT NULL DEFAULT 'Unknown'  -- NOT NULL + DEFAULT
 );
 
--- 2. DEFAULT constraint
+--------------------------------------------------
+-- Employee Table with Constraints
+--------------------------------------------------
 CREATE TABLE employee (
-    employee_id INT PRIMARY KEY,
-    first_name VARCHAR(50),
-    last_name VARCHAR(50),
-    hire_date DATE DEFAULT GETDATE(),
-    department_id INT
+    employee_id INT PRIMARY KEY,                  -- PRIMARY KEY
+    first_name VARCHAR(50) NOT NULL,               -- NOT NULL
+    last_name VARCHAR(50) NOT NULL,                -- NOT NULL
+    hire_date DATE NOT NULL DEFAULT GETDATE(),     -- DEFAULT
+    salary NUMERIC(10,2) NOT NULL CHECK (salary > 0), -- CHECK
+    department_id INT NOT NULL,                    -- NOT NULL
+
+    -- UNIQUE constraint on full name
+    CONSTRAINT uc_employee_name UNIQUE (first_name, last_name),
+
+    -- FOREIGN KEY constraint
+    CONSTRAINT fk_employee_department
+        FOREIGN KEY (department_id)
+        REFERENCES department(dept_id)
 );
 
-CREATE TABLE department (
-    dept_id INT PRIMARY KEY,
-    name VARCHAR(50),
-    state VARCHAR(50) DEFAULT 'Unknown'
-);
+--------------------------------------------------
+-- Sample Data Insert
+--------------------------------------------------
+INSERT INTO department (dept_id, name, state) VALUES
+(1, 'Sales', 'New York'),
+(2, 'IT', 'California'),
+(3, 'HR', DEFAULT);
 
--- 3. UNIQUE constraint
-CREATE TABLE employee(
-    employee_id INT PRIMARY KEY,
-    first_name VARCHAR(50),
-    last_name VARCHAR(50),
-    hire_date DATE,
-    salary NUMERIC(10, 2),
-    department_id INT,
-    CONSTRAINT uc_employee UNIQUE(first_name, last_name)
-);
+INSERT INTO employee (employee_id, first_name, last_name, salary, department_id) VALUES
+(1, 'John', 'Doe', 50000, 1),
+(2, 'Jane', 'Smith', 60000, 2),
+(3, 'Mike', 'Brown', 55000, 3);
 
-CREATE TABLE department(
-    dept_id INT PRIMARY KEY,
-    name VARCHAR(50),
-    state VARCHAR(50),
-    CONSTRAINT uc_department UNIQUE(name)
-);
-
--- 4. PRIMARY KEY constraint
-CREATE TABLE employee (
-    employee_id INT PRIMARY KEY,
-    first_name VARCHAR(50),
-    last_name VARCHAR(50),
-    hire_date DATE,
-    salary NUMERIC(10, 2),
-    department_id INT
-);
-
-CREATE TABLE department (
-    dept_id INT PRIMARY KEY,
-    name VARCHAR(50),
-    state VARCHAR(50)
-);
-
--- 5. FOREIGN KEY constraint
-CREATE TABLE employee (
-    employee_id INT PRIMARY KEY,
-    first_name VARCHAR(50),
-    last_name VARCHAR(50),
-    hire_date DATE,
-    salary NUMERIC(10, 2),
-    department_id INT REFERENCES department(dept_id)
-);
-
-CREATE TABLE department (
-    dept_id INT PRIMARY KEY,
-    name VARCHAR(50),
-    state VARCHAR(50)
-);
-
--- 6. CHECK constraint
-CREATE TABLE employee (
-    employee_id INT PRIMARY KEY,
-    first_name VARCHAR(50),
-    last_name VARCHAR(50),
-    hire_date DATE,
-    salary NUMERIC(10, 2),
-    department_id INT CHECK(department_id > 0)
-);
-
-CREATE TABLE department (
-    dept_id INT PRIMARY KEY,
-    name VARCHAR(50),
-    state VARCHAR(50)
-)
+--------------------------------------------------
+-- Validation Queries
+--------------------------------------------------
+SELECT * FROM department;
+SELECT * FROM employee;
