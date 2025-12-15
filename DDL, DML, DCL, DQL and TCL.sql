@@ -1,63 +1,75 @@
+/* =====================================================
+   SQL COMMAND TYPES DEMONSTRATION
+   DDL, DML, DCL, DQL, TCL
+   ===================================================== */
+
+--------------------------------------------------------
+-- Cleanup
+--------------------------------------------------------
+DROP TABLE IF EXISTS employee;
+
+--------------------------------------------------------
 -- DDL (Data Definition Language)
--- DDL commands are used to define or modify the structure of a database and its objects (tables, views, indexes, etc.).
+-- Used to define or modify database objects
+--------------------------------------------------------
 CREATE TABLE employee (
-  id INT PRIMARY KEY,
-  first_name VARCHAR(50),
-  last_name VARCHAR(50),
-  age INT,
-  department_id INT
+    id INT PRIMARY KEY,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    age INT CHECK (age >= 0),
+    department_id INT NOT NULL
 );
 
-
+--------------------------------------------------------
 -- DML (Data Manipulation Language)
--- DML commands are used to manipulate the data stored in a database, such as inserting, updating, or deleting records.
+-- Used to insert, update, and delete data
+--------------------------------------------------------
 INSERT INTO employee (id, first_name, last_name, age, department_id)
-VALUES (1, 'John', 'Doe', 30, 1),
-       (2, 'Jane', 'Smith', 28, 2);
+VALUES
+(1, 'John', 'Doe', 30, 1),
+(2, 'Jane', 'Smith', 28, 2);
 
-
--- DCL (Data Control Language)
--- DCL commands are used to manage user access, privileges, and roles in a database.
-GRANT SELECT ON employee TO some_user;
-
-
+--------------------------------------------------------
 -- DQL (Data Query Language)
--- DQL commands are used to query the data stored in a database and retrieve specific information.
+-- Used to retrieve data
+--------------------------------------------------------
 SELECT * FROM employee;
 
+--------------------------------------------------------
+-- DCL (Data Control Language)
+-- Used to control access and permissions
+--------------------------------------------------------
+-- Example only, user must exist
+GRANT SELECT ON employee TO some_user;
 
+--------------------------------------------------------
 -- TCL (Transaction Control Language)
--- TCL commands are used to manage transactions in a database, ensuring that changes are either committed or rolled back.
+-- Used to manage transactions
+--------------------------------------------------------
 
--- 1. BEGIN TRANSACTION:
--- It is used to start a new transaction
--- A transaction is a sequence of database operations that are executed as a single unit of work.
--- If any operation within a transaction fails, the entire transaction can be rolled back to maintain data consistency.
--- It ensures that either all operations succeed or none of them succeed.
+-- Start a transaction
 BEGIN TRANSACTION;
 
--- 2. COMMIT TRANSACTION:
--- It permanently saves the changes made during a transaction to the database.
-COMMIT TRANSACTION;
+-- Update employees in department 1
+UPDATE employee
+SET age = age + 1
+WHERE department_id = 1;
 
--- 3. ROLLBACK TRANSACTION:
--- It undos changes made during a transaction and restores the database to its state before the transaction started.
-ROLLBACK TRANSACTION;
-
--- 4. SAVE TRANSACTION
--- It creates a savepont within a transaction.
--- A savepont is a point in a transaction where we can roll back to if necessary.
+-- Create a savepoint
 SAVE TRANSACTION my_savepoint;
 
--- Querying
-begin transaction;
+-- Update employees in department 2
+UPDATE employee
+SET age = age + 1
+WHERE department_id = 2;
 
-update employee set age = age + 1 where department_id = 1;
+-- Roll back only the second update
+ROLLBACK TRANSACTION my_savepoint;
 
-save transaction my_savepoint;
+-- Commit the remaining changes
+COMMIT TRANSACTION;
 
-update employee set age = age + 1 where department_id = 2;
-
-rollback transaction my_savepoint;
-
-commit transaction;
+--------------------------------------------------------
+-- Final Data Check
+--------------------------------------------------------
+SELECT * FROM employee;
